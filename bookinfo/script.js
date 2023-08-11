@@ -46,6 +46,6 @@ javascript: {
 
   // 表示する内容
   const lines = `---\ntitle: ${title} \nauthor: [${authors.join(',')}]\nasin: ${asin}\npublish_date: ${publish_date}\n---\n# ${link}\n${viewAuthors.join('\n')}${mdimage}\n${selection}\n\n----\n`;
-  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath=03_Books/'+title+ '&data='+encodeURIComponent(lines);
+  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/'+title)+'&data='+encodeURIComponent(lines);
   window.open(oburi);
 }
