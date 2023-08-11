@@ -49,6 +49,6 @@ javascript: {
   
   //document.getElementById('bookDescription_feature_div').innerHTML = `<textarea style="height:500px">${lines}</textarea>`;
   //window.open('obsidian://new?vault=vaultone&name='+encodeURIComponent(title.trim())+'&content='+encodeURIComponent(body));
-  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+title+ '&data='+lines;
+  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+title+ '&data='+encodeURIComponent(lines);
   window.open(oburi);
 }
