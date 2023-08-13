@@ -1,10 +1,17 @@
 javascript: {
   const data = {};
+  if (document.getElementById('quantity') !== null) {
+    data.media = "物理本";
+  } else if (document.getElementById('tmm-ku-upsell') !== null) {
+    data.media = "KindleUnlimited";
+  } else {
+    data.media = "Kindle";
+  }
   
   // 書籍名の取得
   const productTitle = document.getElementById("productTitle");
   const ebooksProductTitle = document.getElementById("ebooksProductTitle");
-  data.title = productTitle ? productTitle.innerText.trim() : ebooksProductTitle.innerText.trim();
+  data.title = productTitle ? productTitle.innerText.trim().replace(/\//, '／') : ebooksProductTitle.innerText.trim().replace(/\//, '／');
 
   // ASIN の取得
   const asinId = document.getElementById('ASIN'); 
@@ -60,23 +67,21 @@ javascript: {
   const lines = `---
 tags: [
   "書籍/出版社/${data.publisher}",
-  ${data.authors.join('\n  ')},
+  ${data.authors.join(',\n  ')},
   "書籍/発売日/${data.year}/${data.month}/${data.date}",
-  "書籍/メディア/",
+  "書籍/メディア/${data.media}",
   "書籍/分類/"
 ]
 ---
-
 # 書籍情報
 ${data.mdimage}
-
 ${data.link}
 
 ## 著者
 ${data.viewAuthors.join('\n')}
 
 ## 出版社
-- [[{$data.publisher}]]
+- [[${data.publisher}]]
 
 ## 発売日
 - [[${data.year}-${data.month}-${data.date}]]
@@ -86,6 +91,9 @@ ${data.viewAuthors.join('\n')}
 
 ## ISBN
 - ${data.isbn}
+
+# 閲覧履歴
+- 未読
 
 # メモ
 ## 雑感
