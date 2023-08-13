@@ -47,8 +47,8 @@ javascript: {
   data.mdimage = `\n![|100](${imageurl})\n`;  
   
   // 著者情報の取得
-  const authors = [];
-  const viewAuthors = [];
+  data.authors = [];
+  data.viewAuthors = [];
   document.querySelectorAll('.author').forEach((c) => {
       var at = c.innerText.replace(/\r?\n/g, '').replace(/,/, '');
       var pu = at.match(/\(.+\)/);
