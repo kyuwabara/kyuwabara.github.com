@@ -1,8 +1,10 @@
 javascript: {
+  const data = {};
+  
   // 書籍名の取得
   const productTitle = document.getElementById("productTitle");
   const ebooksProductTitle = document.getElementById("ebooksProductTitle");
-  const title = productTitle ? productTitle.innerText.trim() : ebooksProductTitle.innerText.trim();
+  data.title = productTitle ? productTitle.innerText.trim() : ebooksProductTitle.innerText.trim();
 
   // ASIN の取得
   const asinId = document.getElementById('ASIN'); 
@@ -15,23 +17,34 @@ javascript: {
     detail = subdoc.getElementById("detailBullets_feature_div");
   }
 
-  // 出版関係の情報を取得 (ここでは出版日付だけ)
+  // 出版関係の情報を取得
   const pubdata = detail.innerText.split(/\n/);
-  const publish_date = pubdata[2].slice(10);  //出版日付
-
-  // 書籍のタイトルとリンク貼り
-  const url = `https://www.amazon.co.jp/dp/${asin}`;
-  const link = `[${title}](${url})`;
+  pubdata.forEach((line) => {
+    if (line.startsWith("出版社")) {
+      data.publisher = line.split(";")[0].slice(10).split(" ")[0];
+    } else if (line.startsWith("発売日")) {
+      const ymd = line.slice(10).split("/");
+      data.year = ymd[0];
+      data.month = ymd[1].padStart(2, "0");
+      data.date = ymd[2].padStart(2, "0");
+    } else if (line.startsWith("本の長さ") || line.startsWith("単行本")) {
+      data.pages = line.slice(line.lastIndexOf(" ")+1, line.length-3);
+    } else if (line.startsWith("ページ番号ソース") || line.startsWith("ISBN-10")) {
+      data.isbn = line.slice(line.lastIndexOf(" ")+1);
+    }
+  });
+  
+  data.link = `[Amazon](https://www.amazon.co.jp/dp/${asin})`;
 
   // 選択範囲を取得する
   const isSelection = window.getSelection().toString();
-  const selection = isSelection ? `> [!quote]\n> ${isSelection.replace(/(\W+)( )(\W+)/g,'$1$3').replace(/\n/g,'\n> ')}` : "";
+  data.selection = isSelection ? `> [!quote]\n> ${isSelection.replace(/(\W+)( )(\W+)/g,'$1$3').replace(/\n/g,'\n> ')}` : "";
 
   // 書影の取得
   const imgBlkFront = document.getElementById("imgBlkFront");
   const ebooksImgBlkFront = document.getElementById("ebooksImgBlkFront");
   const imageurl = imgBlkFront ? imgBlkFront.getAttribute("src") : ebooksImgBlkFront.getAttribute("src");
-  const mdimage = `\n![|100](${imageurl})\n`;  
+  data.mdimage = `\n![|100](${imageurl})\n`;  
   
   // 著者情報の取得
   const authors = [];
@@ -40,12 +53,54 @@ javascript: {
       var at = c.innerText.replace(/\r?\n/g, '').replace(/,/, '');
       var pu = at.match(/\(.+\)/);
       var ct = at.replace(/\(.+\)/, '').replace(/ /g, '');
-      viewAuthors.push(`[[${ct}]]${pu}`);
-      authors.push(ct);
+      data.viewAuthors.push(`- [[${ct}]]${pu}`);
+      data.authors.push(`"書籍/著者/${ct}"`);
   });
 
-  // 表示する内容
-  const lines = `---\ntitle: ${title} \nauthor: [${authors.join(',')}]\nasin: ${asin}\npublish_date: ${publish_date}\n---\n# ${link}\n${viewAuthors.join('\n')}${mdimage}\n${selection}\n\n----\n`;
-  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/'+title)+'&data='+encodeURIComponent(lines);
+  const lines = `---
+tags: [
+  "書籍/出版社/${data.publisher}",
+  ${data.authors.join('\n  ')},
+  "書籍/発売日/${data.year}/${data.month}/${data.date}",
+  "書籍/メディア/",
+  "書籍/分類/"
+]
+---
+
+# 書籍情報
+${data.mdimage}
+
+${data.link}
+
+## 著者
+${data.viewAuthors.join('\n')}
+
+## 出版社
+- [[{$data.publisher}]]
+
+## 発売日
+- [[${data.year}-${data.month}-${data.date}]]
+
+## ページ数
+- ${data.pages}
+
+## ISBN
+- ${data.isbn}
+
+# メモ
+## 雑感
+
+## 知見
+
+## 再認識
+
+## 違和感
+
+## 行動
+
+## その他
+${data.selection}
+`;
+  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/'+data.title)+'&data='+encodeURIComponent(lines);
   window.open(oburi);
 }
