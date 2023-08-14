@@ -47,6 +47,9 @@ javascript: {
       data.viewAuthors.push(`- [[${ct}]](${pu[1]})`);
       data.authors.push(`"書籍/著者/${ct}"`);
   });
+  if (data.authors.length > 4) {
+    data.authors = [];
+  }
 
   const lines = `---
 tags: [
