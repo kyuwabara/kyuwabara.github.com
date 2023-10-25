@@ -48,9 +48,10 @@ javascript: {
   data.selection = isSelection ? `> [!quote]\n> ${isSelection.replace(/(\W+)( )(\W+)/g,'$1$3').replace(/\n/g,'\n> ')}` : "";
 
   // 書影の取得
-  const imgBlkFront = document.getElementById("imgBlkFront");
-  const ebooksImgBlkFront = document.getElementById("ebooksImgBlkFront");
-  const imageurl = imgBlkFront ? imgBlkFront.getAttribute("src") : ebooksImgBlkFront.getAttribute("src");
+  //const imgBlkFront = document.getElementById("imgBlkFront");
+  //const ebooksImgBlkFront = document.getElementById("ebooksImgBlkFront");
+  //const imageurl = imgBlkFront ? imgBlkFront.getAttribute("src") : ebooksImgBlkFront.getAttribute("src");
+  const imageurl = document.getElementById("landingImage").getAttribute("src");
   data.mdimage = `\n![|100](${imageurl})\n`;  
   
   // 著者情報の取得
