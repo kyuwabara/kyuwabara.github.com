@@ -107,7 +107,8 @@ ${data.viewAuthors.join('\n')}
 ## その他
 ${data.selection}
 `;
-  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/'+data.title)+'&data='+encodeURIComponent(lines);
+  //const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/'+data.title)+'&data='+encodeURIComponent(lines);
+  const oburi = 'obsidian://advanced-uri?vault=vaultone&filepath='+encodeURIComponent('03_Books/sample')+'&data='+encodeURIComponent(lines);
   console.log(oburi.length);
   window.open(oburi);
 }
